@@ -5,6 +5,7 @@ import os
 import numpy as np
 import imutils
 import pytesseract
+import csv
 
 imagefiles = os.listdir(".\\thumbs\\")
 #print(imagefiles)
@@ -56,9 +57,7 @@ for frame in imagefiles:
                 roi = image[y:y + h, x:x + w].copy()
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 break
-    
-    results.append(roi)
-    return results
+
     config = ("-l eng --oem 1 --psm 7")
     # cv2.imshow("Original", image)
     # cv2.waitKey(0)
@@ -67,9 +66,13 @@ for frame in imagefiles:
     # cv2.imshow("Tophat", roi)
     # cv2.waitKey(0)
     results.append(pytesseract.image_to_string(roi, config=config))
-i = 0
+
 for text in results:
-    text = "".join([c if ord(c) < 128 else "" for c in text]).strip()
-    print(text + "\ntime in seconds: " + str(i*2))
-    i+=1
+        text = "".join([c if ord(c) < 128 else "" for c in text]).strip()
+with open("results.csv", "x") as csv_file:
+    i = 0
+    writer = csv.writer(csv_file, delimiter=',')
+    for text in results:
+        writer.writerow((text+ "," + str(i*2)).split(','))
+        i+=1
     
