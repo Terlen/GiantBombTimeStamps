@@ -4,13 +4,14 @@ import argparse
 import os
 import numpy as np
 import imutils
+import pytesseract
 
 imagefiles = os.listdir(".\\thumbs\\")
 #print(imagefiles)
-
+results = []
 for frame in imagefiles:
 
-    print(frame)
+    #print(frame)
     image = cv2.imread("C:\\Users\\aidan\\Programming Projects\\GiantBombTimeStamps\\thumbs\\"+frame)
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -55,10 +56,20 @@ for frame in imagefiles:
                 roi = image[y:y + h, x:x + w].copy()
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 break
-
-    cv2.imshow("Original", image)
-    cv2.waitKey(0)
-    cv2.imshow("GradX", gradX)
-    cv2.waitKey(0)
-    cv2.imshow("Tophat", roi)
-    cv2.waitKey(0)
+    
+    results.append(roi)
+    return results
+    config = ("-l eng --oem 1 --psm 7")
+    # cv2.imshow("Original", image)
+    # cv2.waitKey(0)
+    # cv2.imshow("GradX", gradX)
+    # cv2.waitKey(0)
+    # cv2.imshow("Tophat", roi)
+    # cv2.waitKey(0)
+    results.append(pytesseract.image_to_string(roi, config=config))
+i = 0
+for text in results:
+    text = "".join([c if ord(c) < 128 else "" for c in text]).strip()
+    print(text + "\ntime in seconds: " + str(i*2))
+    i+=1
+    
