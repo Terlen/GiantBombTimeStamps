@@ -1,4 +1,5 @@
 # Apply tophat morphological operation to highlight text
+# Image pre-processing code heavily utilizes code from Adrian Rosebrock at https://www.pyimagesearch.com/2015/11/30/detecting-machine-readable-zones-in-passport-images/
 import cv2
 import argparse
 import os
