@@ -12,7 +12,7 @@ imagefiles = os.listdir(".\\thumbs\\")
 #print(imagefiles)
 results = []
 for frame in imagefiles:
-
+    print(frame)
     #print(frame)
     image = cv2.imread("C:\\Users\\aidan\\Programming Projects\\GiantBombTimeStamps\\thumbs\\"+frame)
 
@@ -45,8 +45,8 @@ for frame in imagefiles:
             ar = w / float(h)
             crWidth = w / float(gray.shape[1])
             # check to see if the aspect ratio and coverage width are within
-            # acceptable criteria
-            if ar > 3:
+            # acceptable criteria  
+            if ar > 3 and crWidth > 0.05:
                 # pad the bounding box since we applied erosions and now need
                 # to re-grow it
                 pX = int((x + w) * 0.03)
@@ -55,18 +55,22 @@ for frame in imagefiles:
                 (w, h) = (w + (pX * 2), h + (pY * 2))
                 # extract the ROI from the image and draw a bounding box
                 # surrounding the MRZ
-                roi = image[y:y + h, x:x + w].copy()
-                cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                break
+                if x > 0 and (y >= 300 and y <= 360):
+                    roi = image[y:y + h, x:x + w].copy()
+                    results.append(pytesseract.image_to_string(roi, config=config))
+                    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                    break
 
     config = ("-l eng --oem 1 --psm 7")
     # cv2.imshow("Original", image)
+    # cv2.imshow("gradX", gradX)
     # cv2.waitKey(0)
     # cv2.imshow("GradX", gradX)
     # cv2.waitKey(0)
     # cv2.imshow("Tophat", roi)
-    # cv2.waitKey(0)
-    results.append(pytesseract.image_to_string(roi, config=config))
+    # cv2.waitKey(0)s
+    #print(roi.shape)
+#     
 
 for text in results:
         text = "".join([c if ord(c) < 128 else "" for c in text]).strip()
