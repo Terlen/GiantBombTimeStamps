@@ -57,7 +57,9 @@ for frame in imagefiles:
                 # surrounding the MRZ
                 if x > 0 and (y >= 300 and y <= 360):
                     roi = image[y:y + h, x:x + w].copy()
-                    results.append(pytesseract.image_to_string(roi, config=config))
+                    detectedText = pytesseract.image_to_string(roi, config=config)
+                    results.append(detectedText)
+                    # print(results)
                     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
                     break
 
@@ -72,12 +74,12 @@ for frame in imagefiles:
     #print(roi.shape)
 #     
 
-for text in results:
-        text = "".join([c if ord(c) < 128 else "" for c in text]).strip()
+
 with open("results.csv", "x") as csv_file:
     i = 0
     writer = csv.writer(csv_file, delimiter=',')
     for text in results:
+        text = "".join([c if 31 < ord(c) < 128 else "" for c in text]).strip()
         writer.writerow((text+ "," + str(i*2)).split(','))
         i+=1
     
