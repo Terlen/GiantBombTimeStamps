@@ -14,8 +14,18 @@ def debugReadResults():
             return data
     except:
         print('No valid results.csv found.')
-    
 
+# Debug function to unpack CSV data into list with same structure as main program
+def debugListUnpack(data):
+    results = []
+    # remove header
+    data.pop(0)
+    for record in data:
+        results.append((record[0],record[1]))
+    return results
+
+def debugData():
+    return debugListUnpack(debugReadResults())
 
 
 # Receive list of strings from OCR process and store in a Counter object to determine frequencies of each unique string
