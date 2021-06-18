@@ -15,11 +15,11 @@ def debugReadResults():
         print('No valid results.csv found.')
 
 # Debug function to unpack CSV data into list with same structure as main program
-def debugListUnpack(data):
+def debugListUnpack(csvList):
     results = []
     # remove header
-    data.pop(0)
-    for record in data:
+    csvList.pop(0)
+    for record in csvList:
         results.append((record[0],record[1]))
     return results
 
@@ -28,9 +28,11 @@ def debugData():
 
 
 # Receive list of strings from OCR process and store in a Counter object to determine frequencies of each unique string
-def listToFilteredCounter(results,occuranceCutoff=5):
+def listToFilteredCounter(ocrOutput,occuranceCutoff=5):
     # counter to determine number of occurances for all strings, including potential OCR errors
     stringCounter = Counter([item[0] for item in results])
     # create new Counter omitting strings that occur less than number of times specified by occuranceCutoff.
     filteredCounter = Counter({text: instances for text, instances in stringCounter.items() if instances >= occuranceCutoff})
     return filteredCounter
+
+
