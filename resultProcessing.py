@@ -2,7 +2,6 @@
 
 from collections import Counter
 import csv
-import os.path
 
 # Debugging function to generate data object from csv file stored to disk so I don't have to regenerate it each time I test!
 def debugReadResults():
@@ -29,5 +28,9 @@ def debugData():
 
 
 # Receive list of strings from OCR process and store in a Counter object to determine frequencies of each unique string
-def listToCounter(results):
-    stringCounter = Counter(results)
+def listToFilteredCounter(results,occuranceCutoff=5):
+    # counter to determine number of occurances for all strings, including potential OCR errors
+    stringCounter = Counter([item[0] for item in results])
+    # create new Counter omitting strings that occur less than number of times specified by occuranceCutoff.
+    filteredCounter = Counter({text: instances for text, instances in stringCounter.items() if instances >= occuranceCutoff})
+    return filteredCounter
