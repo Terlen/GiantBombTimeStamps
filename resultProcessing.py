@@ -30,9 +30,14 @@ def debugData():
 # Receive list of strings from OCR process and store in a Counter object to determine frequencies of each unique string
 def listToFilteredCounter(ocrOutput,occuranceCutoff=5):
     # counter to determine number of occurances for all strings, including potential OCR errors
-    stringCounter = Counter([item[0] for item in results])
+    stringCounter = Counter([item[0] for item in ocrOutput])
     # create new Counter omitting strings that occur less than number of times specified by occuranceCutoff.
     filteredCounter = Counter({text: instances for text, instances in stringCounter.items() if instances >= occuranceCutoff})
     return filteredCounter
 
-
+# Determine the earliest frame in which each string occured. Return dict with string:frameNumber
+def earliestStringOccurance(Counter,ocrOutput):
+    return {
+        key: min([row[1] for row in ocrOutput if row[0] == key]) 
+        for key in Counter.keys()
+    }
