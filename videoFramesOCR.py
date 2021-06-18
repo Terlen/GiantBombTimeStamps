@@ -58,7 +58,7 @@ for frame in imagefiles:
                 if x > 0 and (y >= 300 and y <= 360):
                     roi = image[y:y + h, x:x + w].copy()
                     detectedText = pytesseract.image_to_string(roi, config=config).rstrip()
-                    results.append((detectedText,frame.strip('.jpg')))
+                    results.append((detectedText,int(frame.strip('.jpg'))))
                     # print(results)
                     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
                     break
