@@ -26,6 +26,10 @@ def debugListUnpack(csvList):
 def debugData():
     return debugListUnpack(debugReadResults())
 
+def debugProcessingTest():
+    ocrOutput = debugData()
+    cleanedData = listToFilteredCounter(ocrOutput)
+    return earliestStringOccurance(cleanedData, ocrOutput)
 
 # Receive list of strings from OCR process and store in a Counter object to determine frequencies of each unique string
 def listToFilteredCounter(ocrOutput,occuranceCutoff=5):
