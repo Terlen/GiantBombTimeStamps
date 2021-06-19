@@ -58,6 +58,7 @@ for frame in imagefiles:
                 if x > 0 and (y >= 300 and y <= 360):
                     roi = image[y:y + h, x:x + w].copy()
                     detectedText = pytesseract.image_to_string(roi, config=config).rstrip()
+                    detectedText = "".join([c if 31 < ord(c) < 128 else "" for c in detectedText])
                     results.append((detectedText,int(frame.strip('.jpg'))))
                     # print(results)
                     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
@@ -81,7 +82,6 @@ with open("results.csv", "x", newline='') as csv_file:
     writer = csv.writer(csv_file, delimiter=',')
     writer.writerow(headers)
     for item in results:
-        text = "".join([c if 31 < ord(c) < 128 else "" for c in item[0]])
-        writer.writerow((text + "," + item[1] + "," + str(int(item[1])*5)).split(','))
+        writer.writerow(item)
         #i+=1
     
