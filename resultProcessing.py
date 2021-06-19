@@ -38,6 +38,6 @@ def listToFilteredCounter(ocrOutput,occuranceCutoff=5):
 # Determine the earliest frame in which each string occured. Return dict with string:frameNumber
 def earliestStringOccurance(Counter,ocrOutput):
     return {
-        key: min([row[1] for row in ocrOutput if row[0] == key]) 
+        key: min([int(row[1]) for row in ocrOutput if row[0] == key])
         for key in Counter.keys()
     }
