@@ -3,6 +3,7 @@
 from collections import Counter, defaultdict
 import csv
 from difflib import SequenceMatcher
+import datetime
 
 # Debugging function to generate data object from csv file stored to disk so I don't have to regenerate it each time I test!
 def debugReadResults():
@@ -39,6 +40,7 @@ def debugProcessingTest():
     output = combineSimilarTopics(ocrInput)
     print(output)
     output = earliestFrame(output)
+    output = frameToTimestamp(output)
     return output
 
 # Receive list of strings from OCR process and store in a Counter object to determine frequencies of each unique string
@@ -91,6 +93,12 @@ def combineSimilarTopics(ocrOutputDict):
         combinedDict[key].sort()
             
     return combinedDict
-            
-                
+
+# convert frame number to video timestamp in seconds            
+def frameToTimestamp(topicDict,sampleRate=5):
+    for key in topicDict.keys():
+        topicDict[key] = topicDict[key]*sampleRate
+        topicDict[key] = str(datetime.timedelta(seconds=topicDict[key]))
+
+    return topicDict
 
