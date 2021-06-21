@@ -34,9 +34,12 @@ def debugListToDict(ocrOutputList):
     return debugDict
 
 def debugProcessingTest():
-    ocrOutput = debugData()
-    cleanedData = listToFilteredCounter(ocrOutput)
-    return earliestStringOccurance(cleanedData, ocrOutput)
+    ocrInput = debugData()
+    ocrInput = debugListToDict(ocrInput)
+    output = combineSimilarTopics(ocrInput)
+    print(output)
+    output = earliestFrame(output)
+    return output
 
 # Receive list of strings from OCR process and store in a Counter object to determine frequencies of each unique string
 def listToFilteredCounter(ocrOutputList,occuranceCutoff=2):
