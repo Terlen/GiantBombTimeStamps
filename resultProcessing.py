@@ -32,7 +32,7 @@ def debugProcessingTest():
     return earliestStringOccurance(cleanedData, ocrOutput)
 
 # Receive list of strings from OCR process and store in a Counter object to determine frequencies of each unique string
-def listToFilteredCounter(ocrOutput,occuranceCutoff=5):
+def listToFilteredCounter(ocrOutput,occuranceCutoff=2):
     # counter to determine number of occurances for all strings, including potential OCR errors
     stringCounter = Counter([item[0] for item in ocrOutput])
     # create new Counter omitting strings that occur less than number of times specified by occuranceCutoff.
@@ -45,3 +45,4 @@ def earliestStringOccurance(Counter,ocrOutput):
         key: min([int(row[1]) for row in ocrOutput if row[0] == key])
         for key in Counter.keys()
     }
+
