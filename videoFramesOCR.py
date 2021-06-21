@@ -7,10 +7,12 @@ import numpy as np
 import imutils
 import pytesseract
 import csv
+from collections import defaultdict
 
 imagefiles = os.listdir(".\\thumbs\\")
 #print(imagefiles)
-results = []
+results = defaultdict(list)
+debugResults = []
 for frame in imagefiles:
     print(frame)
     #print(frame)
@@ -57,9 +59,28 @@ for frame in imagefiles:
                 # surrounding the MRZ
                 if x > 0 and (y >= 300 and y <= 360):
                     roi = image[y:y + h, x:x + w].copy()
-                    detectedText = pytesseract.image_to_string(roi, config=config).rstrip()
-                    detectedText = "".join([c if 31 < ord(c) < 128 else "" for c in detectedText])
-                    results.append((detectedText,int(frame.strip('.jpg'))))
+                    #detectedText = pytesseract.image_to_string(roi, config=config).rstrip()
+                    ocrMetaData = pytesseract.image_to_data(roi, config=config, output_type='data.frame')
+                    #print(ocrMetaData.head(10))
+                    #print(detectedText)
+                    ocrMetaData = ocrMetaData[ocrMetaData.conf != -1]
+                    #print(ocrMetaData.head())
+                    word = ocrMetaData.groupby(['block_num'])['text'].apply(lambda x: ' '.join(list(x))).tolist()
+                    #print(words)
+                    #if words:
+                    #    print(words[0])
+                    meanConfidence = ocrMetaData.groupby(['block_num'])['conf'].mean()
+                    #print(words)
+                    #print(meanConfidence[0])
+                    #print(ocrMetaData.conf, ocrMetaData.text)
+                    if ocrMetaData["conf"].mean() > 90:
+                        #print(ocrMetaData)
+                        #print(word)
+                        detectedText = "".join([c if 31 < ord(c) < 128 else "" for c in word[0]])
+                        print(detectedText)
+                        results[detectedText].append(int(frame.strip('.jpg')))
+                        debugResults.append([detectedText,int(frame.strip('.jpg'))])
+
                     # print(results)
                     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
                     break
@@ -78,10 +99,10 @@ for frame in imagefiles:
 
 with open("results.csv", "x", newline='') as csv_file:
     #i = 0
-    headers = ['String','Frame number','video timestamp (seconds)']
+    headers = ['String','Frame number']
     writer = csv.writer(csv_file, delimiter=',')
     writer.writerow(headers)
-    for item in results:
+    for item in debugResults:
         writer.writerow(item)
         #i+=1
     
